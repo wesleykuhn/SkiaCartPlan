@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SkiaHelper.App">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <!--#region [COLORS]-->
+            <Color x:Key="TranspWhiteColor">#33FFFFFF</Color>
+            <!--#endregion-->
+            
+            <!--#region [BUTTON]-->
+            <Style x:Key="BaseButton" TargetType="Button">
+                <Setter Property="FontFamily" Value="Arial" />
+            </Style>
+            
+            <Style x:Key="TranspOutMedWhiteButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="BackgroundColor" Value="{StaticResource TranspWhiteColor}" />
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="CornerRadius" Value="5" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BorderColor" Value="{StaticResource TranspWhiteColor}" />
+            </Style>
+            <!--#endregion-->
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

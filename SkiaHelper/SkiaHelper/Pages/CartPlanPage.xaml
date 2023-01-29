@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SkiaHelper.Pages.CartPlanPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:styling="clr-namespace:SkiaHelper.Styling"
+    xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+    xmlns:viewModels="clr-namespace:SkiaHelper.ViewModels"
+    x:DataType="viewModels:CartPlanViewModel">
+
+    <Grid>
+        <skia:SKGLView
+            x:Name="skglView"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand">
+            <skia:SKGLView.GestureRecognizers>
+                <PinchGestureRecognizer PinchUpdated="PinchGestureRecognizer_PinchUpdated" />
+            </skia:SKGLView.GestureRecognizers>
+        </skia:SKGLView>
+
+        <Button
+            Style="{StaticResource TranspOutMedWhiteButton}"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            Command="{Binding PlusButtonCommand}"
+            Margin="0,15,15,0">
+            <Button.ImageSource>
+                <FontImageSource
+                    FontFamily="FAS"
+                    Glyph="{Binding AddingModeButtonIcon}"
+                    Size="19"
+                    Color="{StaticResource TranspWhiteColor}" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
+</ContentPage>
