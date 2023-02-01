@@ -9,7 +9,7 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        MainPage = new CartPlanPage();
+        MainPage = new AppShell();
     }
 
     protected override void OnStart()

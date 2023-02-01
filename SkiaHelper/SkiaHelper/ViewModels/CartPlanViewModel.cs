@@ -1,14 +1,19 @@
 ﻿using SkiaHelper.Calcs;
+using SkiaHelper.Converters;
+using SkiaHelper.Extensions;
 using SkiaHelper.Models;
+using SkiaHelper.Pages;
+using SkiaHelper.ViewModelArgs;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
-using System.Collections.Generic;
 using System;
-using Xamarin.Forms;
-using System.Numerics;
+using System.Collections.Generic;
 using System.Linq;
-using SkiaHelper.Converters;
-using SkiaHelper.Styling;
+using System.Numerics;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.CommunityToolkit.ObjectModel;
+using Xamarin.Forms;
 
 namespace SkiaHelper.ViewModels;
 
@@ -23,32 +28,41 @@ public  class CartPlanViewModel : BaseViewModel
 
     #region [ BIND PROPS ]
 
-    private bool addingMode; //[OnClick]: False = vectors moving, calcs, etc | True = adds vector
-    public bool AddingMode
+    private double curZoomPerc = 10;
+    public double CurZoomPerc
     {
-        get => addingMode;
-        set
-        {
-            SetProperty(ref addingMode, value);
-
-            AddingModeButtonIcon = value ? FontAwesomeSolid.UpDownLeftRight : FontAwesomeSolid.Plus;
-        }
+        get => curZoomPerc;
+        set => SetProperty(ref curZoomPerc, value);
     }
 
-    private string addingModeButtonIcon = FontAwesomeSolid.Plus;
-    public string AddingModeButtonIcon
+    private string typedYPos;
+    public string TypedYPos
     {
-        get => addingModeButtonIcon;
-        set => SetProperty(ref addingModeButtonIcon, value);
+        get => typedYPos;
+        set => SetProperty(ref typedYPos, value);
+    }
+
+    private string typedXPos;
+    public string TypedXPos
+    {
+        get => typedXPos;
+        set => SetProperty(ref typedXPos, value);
+    }
+
+    private bool showAddVecEntries;
+    public bool ShowAddVecEntries
+    {
+        get => showAddVecEntries;
+        set => SetProperty(ref showAddVecEntries, value);
     }
 
     #endregion
 
     #region [ FIELDS ]
 
-    private bool isDoingPinchGesture;
+    private MathOperationArgs mathOperationArgs;
 
-    private short curCartPlanScale = 50;
+    private short curCartPlanScale;
     private float curVecsHeadScale = 0.4f;
     private float curVecsLabelRadProp = 0.3f;
 
@@ -130,9 +144,17 @@ public  class CartPlanViewModel : BaseViewModel
 
     #region [ CMDS ]
 
-    private Command plusButtonCommand;
-    public Command PlusButtonCommand =>
-        plusButtonCommand ??= new(PlusButtonCommandExecute);
+    private ICommand plusButtonCommand;
+    public ICommand PlusButtonCommand =>
+        plusButtonCommand ??= new AsyncCommand(PlusButtonCommandExecute);
+
+    private ICommand zoomBarReleasedCommand;
+    public ICommand ZoomBarReleasedCommand =>
+        zoomBarReleasedCommand ??= new Command(ZoomBarReleasedCommandExecute);
+
+    private ICommand openCalcButnsPopupCommand;
+    public ICommand OpenCalcButnsPopupCommand =>
+        openCalcButnsPopupCommand ??= new AsyncCommand(OpenCalcButnsPopupCommandExecute, allowsMultipleExecutions: false);
 
     #endregion
 
@@ -147,6 +169,8 @@ public  class CartPlanViewModel : BaseViewModel
         skglView.EnableTouchEvents = true;
 
         _skglView = skglView;
+
+        ZoomBarReleasedCommandExecute();
     }
 
     #endregion
@@ -171,38 +195,67 @@ public  class CartPlanViewModel : BaseViewModel
         DrawVectors(in curCartPlanVectors, in canvas, in curScreenCenterVec2, in curVecsHeadScale, in curCartPlanScale, in curVecsLabelRadProp);
     }
 
-    public void OnPinchGestureUpdated(PinchGestureUpdatedEventArgs e)
-    {
-        if (e.Status == GestureStatus.Started)
-        {
-            isDoingPinchGesture = true;
-        }
-        else if (e.Status == GestureStatus.Running)
-        {
-            var newScale = Convert.ToInt16(Math.Round(e.Scale * curCartPlanScale));
-
-            if (newScale > MaxCartPlanScale)
-                newScale = MaxCartPlanScale;
-            else if (newScale < MinCartPlanScale)
-                newScale = MinCartPlanScale;
-
-            curCartPlanScale = newScale;
-
-            _skglView.InvalidateSurface();
-        }
-        else
-        {
-            isDoingPinchGesture = false;
-        }
-    }
-
     #endregion
 
     #region [ CMDS Exes ]
 
-    private void PlusButtonCommandExecute()
+    private async Task PlusButtonCommandExecute()
     {
-        AddingMode = !AddingMode;
+        if (!ShowAddVecEntries)
+        {
+            ShowAddVecEntries = true;
+        }
+        else
+        {
+            if (TypedXPos.IsNullEmptyOrWhiteSpace() || TypedYPos.IsNullEmptyOrWhiteSpace())
+            {
+                await DisplayAlert("Error", "Coordinates fields are blank! Please, check.", "Ok");
+                return;
+            }
+
+            var successX = float.TryParse(TypedXPos, out var parsedX);
+            var successY = float.TryParse(TypedYPos, out var parsedY);
+
+            if (!successX || !successY)
+            {
+                await DisplayAlert("Error", "Invalid typed coordinates! Please, check.", "Ok");
+                return;
+            }
+
+            HybridVec2 newVec = new(new Vector2(parsedX, parsedY));
+
+            curCartPlanVectors.Add(newVec);
+
+            ShowAddVecEntries = false;
+
+            TypedXPos = null;
+            TypedYPos = null;
+
+            _skglView.InvalidateSurface();
+        }
+    }
+
+    private void ZoomBarReleasedCommandExecute()
+    {
+        var newScale = Convert.ToInt16((MaxCartPlanScale - MinCartPlanScale) / (100 / CurZoomPerc) + MinCartPlanScale);
+
+        curCartPlanScale = newScale;
+
+        _skglView.InvalidateSurface();
+    }
+
+    private async Task OpenCalcButnsPopupCommandExecute()
+    {
+        var selected = curCartPlanVectors.Where(w => w.IsSelected).ToList();
+
+        if (selected.Count < 2)
+            return;
+
+        mathOperationArgs = new();
+        mathOperationArgs.Vectors = selected;
+        mathOperationArgs.OnCompletedCallback += OnMathOpsPageClosed;
+
+        await Shell.Current.Navigation.PushModalAsync(new MathOperationsPage(mathOperationArgs));
     }
 
     #endregion
@@ -211,31 +264,13 @@ public  class CartPlanViewModel : BaseViewModel
 
     private void SkglView_Touch(object sender, SkiaSharp.Views.Forms.SKTouchEventArgs e)
     {
-        if (isDoingPinchGesture)
-            return;
-
         if (e.ActionType == SkiaSharp.Views.Forms.SKTouchAction.Released)
         {
-            var cartPlanCoords = CoordsConverter.ScreenCoordinatesToUnscCartPlanCoordinates(e.Location.X, e.Location.Y, in curScreenCenterVec2);
-
-            if (AddingMode)
-            {
-                CoordsConverter.ScaleCoordinatesToCartPlan(ref cartPlanCoords, in curCartPlanScale);
-
-                HybridVec2 newVec = new(new Vector2(e.Location.X, e.Location.Y), new Vector2(cartPlanCoords.X, cartPlanCoords.Y));
-
-                curCartPlanVectors.Add(newVec);
-
+            var touched = HandleVectorTouchIfAny(in curCartPlanVectors, e.Location.X, e.Location.Y, in curVecsLabelRadProp, in curCartPlanScale);
+            if (touched)
                 _skglView.InvalidateSurface();
-            }
-            else
-            {
-                var touched = HandleVectorTouchIfAny(in curCartPlanVectors, e.Location.X, e.Location.Y, in curVecsLabelRadProp, in curCartPlanScale);
-                if (touched)
-                    _skglView.InvalidateSurface();
-            }
         }
-        else if (e.WheelDelta != 0)
+        else if (e.WheelDelta != 0) //FOR PC
         {
             float newScale;
             if (e.WheelDelta < -100)
@@ -345,6 +380,9 @@ public  class CartPlanViewModel : BaseViewModel
     {
         for (int i = 0; i < vectors.Count; i++)
         {
+            var screenPosX = vectors[i].CartPlanPos.X * (curCartPlanScale - 1);
+            var screenPosY = vectors[i].CartPlanPos.Y * (curCartPlanScale - 1) * -1;
+
             canvas.Save();
 
             canvas.Translate(screenCenter.X, screenCenter.Y);
@@ -357,17 +395,39 @@ public  class CartPlanViewModel : BaseViewModel
                 StrokeWidth = 2,
             };
 
-            canvas.DrawLine(
-                0f,
-                0f,
-                vectors[i].CartPlanPos.X * curCartPlanScale,
-                vectors[i].CartPlanPos.Y * curCartPlanScale * -1,
-                paint);
+            canvas.DrawLine(vectors[i].CartPlanCenterPos.X, vectors[i].CartPlanCenterPos.Y, screenPosX, screenPosY, paint);
+
+            if (vectors[i].IsSelected)
+            {
+                using var shPaint = new SKPaint()
+                {
+                    Color = vectorColors[i],
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 6,
+                    MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 5f)
+                };
+
+                canvas.DrawLine(0f, 0f, screenPosX, screenPosY, shPaint);
+            }
 
             canvas.Restore();
 
             DrawVectorHeadAndLabel(vectors[i], paint.Color, canvas, screenCenter, curVectorsHeadScale, curCartPlanScale, in i, curVecsLabelRadProp);
         }
+    }
+
+    #endregion
+
+    #region [ MATHS ]
+
+    private void OnMathOpsPageClosed()
+    {
+        var newVec = new HybridVec2(mathOperationArgs.ResultVec);
+
+        curCartPlanVectors.Add(newVec);
+
+        _skglView.InvalidateSurface();
     }
 
     #endregion
@@ -401,7 +461,10 @@ public  class CartPlanViewModel : BaseViewModel
         var cWiseAddedToVecScreePos = Vector2.Add(regVecScreenPos, Vector2.Multiply(screenCWise40N, curVectorsHeadScale));
 
         var labelDistToVec = isFacingDownDir ? -0.45f * curCartPlanScale : 0.45f * curCartPlanScale;
-        vec.LabelCenterScreenPosition = new(vec.ScreenPos.X, vec.ScreenPos.Y - labelDistToVec);
+
+        var labelCenterScrPos = CoordsConverter.CartPlanCoordToScreenPos(vec.CartPlanPos, screenCenter, curCartPlanScale);
+        vec.LabelCenterScreenPosition = new(labelCenterScrPos.X, labelCenterScrPos.Y - labelDistToVec);
+
         var regLabelScreenPos = Vector2.Add(regVecScreenPos, new Vector2(0f, labelDistToVec));
 
         vec.VectorIdentification = CreateVecIndentification(vecIndex);
@@ -434,6 +497,19 @@ public  class CartPlanViewModel : BaseViewModel
         path.Close();
 
         canvas.DrawPath(path, paint);
+
+        if (vec.IsSelected)
+        {
+            using var shPaint = new SKPaint()
+            {
+                Color = vectorColors[vecIndex],
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, 5f)
+            };
+
+            canvas.DrawPath(path, shPaint);
+        }
 
         canvas.DrawCircle(regLabelScreenPos.X, regLabelScreenPos.Y * -1, curCartPlanScale * curVecsLabelRadProp, paint);
 

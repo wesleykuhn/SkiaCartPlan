@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Shell
+    x:Class="SkiaHelper.AppShell"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:SkiaHelper.Pages"
+    Shell.NavBarIsVisible="False">
+
+    <FlyoutItem Title="Cartesian Plane" Route="CartesianPlane">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate pages:CartPlanPage}" />
+        </Tab>
+    </FlyoutItem>
+</Shell>

@@ -3,8 +3,8 @@
     x:Class="SkiaHelper.Pages.CartPlanPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:styling="clr-namespace:SkiaHelper.Styling"
     xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+    xmlns:styling="clr-namespace:SkiaHelper.Styling"
     xmlns:viewModels="clr-namespace:SkiaHelper.ViewModels"
     x:DataType="viewModels:CartPlanViewModel">
 
@@ -12,25 +12,95 @@
         <skia:SKGLView
             x:Name="skglView"
             HorizontalOptions="FillAndExpand"
-            VerticalOptions="FillAndExpand">
-            <skia:SKGLView.GestureRecognizers>
-                <PinchGestureRecognizer PinchUpdated="PinchGestureRecognizer_PinchUpdated" />
-            </skia:SKGLView.GestureRecognizers>
-        </skia:SKGLView>
+            VerticalOptions="FillAndExpand" />
+
+        <Grid
+            Margin="15,15,15,0"
+            ColumnDefinitions="Auto,*"
+            VerticalOptions="Start">
+            <Label
+                Grid.Column="0"
+                FontSize="Medium"
+                Text="Zoom:"
+                TextColor="#AAFFFFFF"
+                VerticalOptions="Center" />
+
+            <Slider
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                DragCompletedCommand="{Binding ZoomBarReleasedCommand}"
+                HorizontalOptions="FillAndExpand"
+                Maximum="100"
+                MaximumTrackColor="#44FFFFFF"
+                Minimum="1"
+                MinimumTrackColor="#44FFFFFF"
+                ThumbColor="#AAFFFFFF"
+                VerticalOptions="Center"
+                Value="{Binding CurZoomPerc}" />
+        </Grid>
 
         <Button
-            Style="{StaticResource TranspOutMedWhiteButton}"
+            Margin="0,60,15,0"
+            Command="{Binding OpenCalcButnsPopupCommand}"
+            HeightRequest="50"
             HorizontalOptions="End"
+            Style="{StaticResource Transp3OutMedWhiteButton}"
             VerticalOptions="Start"
-            Command="{Binding PlusButtonCommand}"
-            Margin="0,15,15,0">
+            WidthRequest="50">
             <Button.ImageSource>
                 <FontImageSource
                     FontFamily="FAS"
-                    Glyph="{Binding AddingModeButtonIcon}"
-                    Size="19"
-                    Color="{StaticResource TranspWhiteColor}" />
+                    Glyph="{x:Static styling:FontAwesomeSolid.Calculator}"
+                    Size="22"
+                    Color="{StaticResource Transp6WhiteColor}" />
             </Button.ImageSource>
         </Button>
+
+        <Grid
+            Padding="10,0,10,10"
+            ColumnDefinitions="*,*,Auto"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="End">
+            <Entry
+                Grid.Column="0"
+                BackgroundColor="{StaticResource Transp3WhiteColor}"
+                HorizontalOptions="FillAndExpand"
+                TextColor="Black"
+                IsVisible="{Binding ShowAddVecEntries}"
+                Keyboard="Numeric"
+                PlaceholderColor="White"
+                Placeholder="X Coordinate"
+                Text="{Binding TypedXPos}"
+                VerticalOptions="Center" />
+
+            <Entry
+                Grid.Column="1"
+                BackgroundColor="{StaticResource Transp3WhiteColor}"
+                HorizontalOptions="FillAndExpand"
+                TextColor="Black"
+                PlaceholderColor="White"
+                IsVisible="{Binding ShowAddVecEntries}"
+                Placeholder="Y Coordinate"
+                Keyboard="Numeric"
+                Text="{Binding TypedYPos}"
+                VerticalOptions="Center" />
+
+            <Button
+                Grid.Column="2"
+                HorizontalOptions="End"
+                HeightRequest="50"
+                WidthRequest="50"
+                Style="{StaticResource Transp3OutMedWhiteButton}"
+                VerticalOptions="End"
+                Command="{Binding PlusButtonCommand}">
+                <Button.ImageSource>
+                    <FontImageSource
+                        Glyph="{x:Static styling:FontAwesomeSolid.Plus}"
+                        FontFamily="FAS"
+                        Color="{StaticResource Transp6WhiteColor}"
+                        Size="22" />
+                </Button.ImageSource>
+            </Button>
+        </Grid>
     </Grid>
 </ContentPage>

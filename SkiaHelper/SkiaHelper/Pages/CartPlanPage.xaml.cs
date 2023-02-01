@@ -15,9 +15,4 @@ public partial class CartPlanPage : ContentPage
 
         BindingContext = _thisContext;
     }
-
-    private void PinchGestureRecognizer_PinchUpdated(object sender, PinchGestureUpdatedEventArgs e)
-    {
-        _thisContext.OnPinchGestureUpdated(e);
-    }
 }

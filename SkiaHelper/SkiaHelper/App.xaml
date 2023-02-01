@@ -6,7 +6,9 @@
     <Application.Resources>
         <ResourceDictionary>
             <!--#region [COLORS]-->
-            <Color x:Key="TranspWhiteColor">#33FFFFFF</Color>
+            <Color x:Key="GringaWhiteColor">#DFF1FF</Color>
+            <Color x:Key="Transp3WhiteColor">#33FFFFFF</Color>
+            <Color x:Key="Transp6WhiteColor">#66FFFFFF</Color>
             <!--#endregion-->
             
             <!--#region [BUTTON]-->
@@ -14,14 +16,32 @@
                 <Setter Property="FontFamily" Value="Arial" />
             </Style>
             
-            <Style x:Key="TranspOutMedWhiteButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
-                <Setter Property="BackgroundColor" Value="{StaticResource TranspWhiteColor}" />
+            <Style x:Key="Transp3OutMedWhiteButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="BackgroundColor" Value="{StaticResource Transp3WhiteColor}" />
                 <Setter Property="FontSize" Value="Medium" />
                 <Setter Property="CornerRadius" Value="5" />
                 <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="BorderWidth" Value="1" />
-                <Setter Property="BorderColor" Value="{StaticResource TranspWhiteColor}" />
+                <Setter Property="BorderColor" Value="{StaticResource Transp3WhiteColor}" />
             </Style>
+
+            <Style x:Key="OutMedWhiteButton" TargetType="Button" BasedOn="{StaticResource BaseButton}">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="CornerRadius" Value="5" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BorderColor" Value="{StaticResource GringaWhiteColor}" />
+            </Style>
+            <!--#endregion-->
+            
+            <!--#region [GRADIENTS]-->
+            <LinearGradientBrush EndPoint="0,1" x:Key="BadBoyGrad">
+                <GradientStop Color="#334055" Offset="0.1" />
+                <GradientStop Color="#303648" Offset="0.4" />
+                <GradientStop Color="#333333" Offset="0.6" />
+                <GradientStop Color="#222222" Offset="1.0" />
+            </LinearGradientBrush>
             <!--#endregion-->
         </ResourceDictionary>
     </Application.Resources>

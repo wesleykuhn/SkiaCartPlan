@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SkiaHelper.Pages.MathOperationsPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:styling="clr-namespace:SkiaHelper.Styling"
+    xmlns:viewModels="clr-namespace:SkiaHelper.ViewModels"
+    Background="{StaticResource BadBoyGrad}"
+    x:DataType="viewModels:MathOperationsViewModel">
+
+    <Grid
+        ColumnDefinitions="Auto,Auto"
+        ColumnSpacing="30"
+        RowSpacing="30"
+        HorizontalOptions="Center"
+        RowDefinitions="Auto,Auto"
+        VerticalOptions="Center">
+        <Button
+            Grid.Row="0"
+            Grid.Column="0"
+            BorderWidth="2"
+            CornerRadius="40"
+            HeightRequest="80"
+            Command="{Binding MathOpButtonClickedCommand}"
+            CommandParameter="Sub"
+            Style="{StaticResource OutMedWhiteButton}"
+            WidthRequest="80">
+            <Button.ImageSource>
+                <FontImageSource
+                    FontFamily="FAS"
+                    Glyph="{x:Static styling:FontAwesomeSolid.Minus}"
+                    Size="44"
+                    Color="{StaticResource GringaWhiteColor}" />
+            </Button.ImageSource>
+        </Button>
+
+        <Button
+            Grid.Row="0"
+            Grid.Column="1"
+            BorderWidth="2"
+            CornerRadius="40"
+            Command="{Binding MathOpButtonClickedCommand}"
+            CommandParameter="Add"
+            HeightRequest="80"
+            Style="{StaticResource OutMedWhiteButton}"
+            WidthRequest="80">
+            <Button.ImageSource>
+                <FontImageSource
+                    FontFamily="FAS"
+                    Glyph="{x:Static styling:FontAwesomeSolid.Plus}"
+                    Size="44"
+                    Color="{StaticResource GringaWhiteColor}" />
+            </Button.ImageSource>
+        </Button>
+
+        <Button
+            Grid.Row="1"
+            Grid.Column="0"
+            CornerRadius="40"
+            BorderWidth="2"
+            Command="{Binding MathOpButtonClickedCommand}"
+            CommandParameter="Div"
+            HeightRequest="80"
+            Style="{StaticResource OutMedWhiteButton}"
+            WidthRequest="80">
+            <Button.ImageSource>
+                <FontImageSource
+                    FontFamily="FAS"
+                    Glyph="{x:Static styling:FontAwesomeSolid.Divide}"
+                    Size="44"
+                    Color="{StaticResource GringaWhiteColor}" />
+            </Button.ImageSource>
+        </Button>
+
+        <Button
+            Grid.Row="1"
+            Grid.Column="1"
+            CornerRadius="40"
+            Command="{Binding MathOpButtonClickedCommand}"
+            CommandParameter="Multi"
+            HeightRequest="80"
+            BorderWidth="2"
+            Style="{StaticResource OutMedWhiteButton}"
+            WidthRequest="80">
+            <Button.ImageSource>
+                <FontImageSource
+                    FontFamily="FAS"
+                    Glyph="{x:Static styling:FontAwesomeSolid.x}"
+                    Size="44"
+                    Color="{StaticResource GringaWhiteColor}" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
+</ContentPage>
