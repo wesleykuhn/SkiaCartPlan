@@ -8,7 +8,7 @@
 
     <FlyoutItem Title="Cartesian Plane" Route="CartesianPlane">
         <Tab>
-            <ShellContent ContentTemplate="{DataTemplate pages:CartPlanPage}" />
+            <ShellContent ContentTemplate="{DataTemplate pages:ColorsPalettePage}" />
         </Tab>
     </FlyoutItem>
 </Shell>

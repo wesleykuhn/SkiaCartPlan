@@ -7,7 +7,7 @@ namespace SkiaHelper.ViewModelArgs;
 
 public class MathOperationArgs
 {
-    public List<HybridVec2> Vectors;
+    public List<CartPlanVec> Vectors;
 
     public bool Add { get; set; }
     public bool Sub { get; set; }

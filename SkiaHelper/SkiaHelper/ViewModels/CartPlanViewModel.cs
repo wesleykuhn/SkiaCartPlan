@@ -68,7 +68,7 @@ public  class CartPlanViewModel : BaseViewModel
 
     private Vector2 curScreenCenterVec2;
 
-    private List<HybridVec2> curCartPlanVectors = new();
+    private List<CartPlanVec> curCartPlanVectors = new();
 
     #endregion
 
@@ -222,7 +222,7 @@ public  class CartPlanViewModel : BaseViewModel
                 return;
             }
 
-            HybridVec2 newVec = new(new Vector2(parsedX, parsedY));
+            CartPlanVec newVec = new(new Vector2(parsedX, parsedY));
 
             curCartPlanVectors.Add(newVec);
 
@@ -298,7 +298,7 @@ public  class CartPlanViewModel : BaseViewModel
     }
 
     private static bool HandleVectorTouchIfAny(
-        in List<HybridVec2> vecs,
+        in List<CartPlanVec> vecs,
         in float touchedScreenX,
         in float touchedScreenY,
         in float curVecsLabelRadProp,
@@ -371,7 +371,7 @@ public  class CartPlanViewModel : BaseViewModel
     #region [ VECTORS DRAWING ]
 
     private static void DrawVectors(
-        in List<HybridVec2> vectors,
+        in List<CartPlanVec> vectors,
         in SKCanvas canvas,
         in Vector2 screenCenter,
         in float curVectorsHeadScale,
@@ -423,7 +423,7 @@ public  class CartPlanViewModel : BaseViewModel
 
     private void OnMathOpsPageClosed()
     {
-        var newVec = new HybridVec2(mathOperationArgs.ResultVec);
+        var newVec = new CartPlanVec(mathOperationArgs.ResultVec);
 
         curCartPlanVectors.Add(newVec);
 
@@ -435,7 +435,7 @@ public  class CartPlanViewModel : BaseViewModel
     #region [ OTHER DRAWINGS ]
 
     private static void DrawVectorHeadAndLabel(
-        HybridVec2 vec,
+        CartPlanVec vec,
         in SKColor vecColor,
         in SKCanvas canvas,
         in Vector2 screenCenter,

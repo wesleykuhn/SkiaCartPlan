@@ -20,4 +20,9 @@ public static class VecMatMaths
         else
             return 1;
     }
+
+    public static void SmoothMovVecToGoal(ref CartPlanVec vec, in float deltaTime)
+    {
+        vec.MovCurrent = Lerp.GetDtimeLerpMovToGoal(vec.MovGoal, vec.MovCurrent, deltaTime, vec.MovVel);
+    }
 }
