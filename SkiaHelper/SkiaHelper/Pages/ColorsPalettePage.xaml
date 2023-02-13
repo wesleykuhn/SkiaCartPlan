@@ -9,17 +9,14 @@
     x:DataType="vms:ColorsPaletteViewModel"
     BackgroundColor="#222222">
 
-    <ScrollView
-        HorizontalOptions="FillAndExpand"
-        Orientation="Horizontal"
-        VerticalOptions="FillAndExpand">
+    <Grid>
         <CollectionView
             HorizontalOptions="FillAndExpand"
             ItemsSource="{Binding Colours}"
             VerticalOptions="FillAndExpand">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SKColorDesc">
-                    <Grid Padding="15,5">
+                    <ScrollView Padding="15,5" Orientation="Horizontal">
                         <Frame
                             Padding="10"
                             BackgroundColor="{Binding Color}"
@@ -39,6 +36,7 @@
                                     Grid.Column="1"
                                     Margin="0,10"
                                     Padding="0"
+                                    HasShadow="False"
                                     BackgroundColor="#222222"
                                     CornerRadius="10"
                                     HeightRequest="90"
@@ -54,6 +52,7 @@
                                 <Frame
                                     Grid.Column="2"
                                     Margin="0,10"
+                                    HasShadow="False"
                                     Padding="0"
                                     BackgroundColor="#ECECEC"
                                     CornerRadius="10"
@@ -71,6 +70,7 @@
                                     Grid.Column="3"
                                     Margin="0,10"
                                     Padding="0"
+                                    HasShadow="False"
                                     BackgroundColor="#222222"
                                     CornerRadius="10"
                                     HeightRequest="90"
@@ -87,6 +87,7 @@
                                     Grid.Column="4"
                                     Margin="0,10"
                                     Padding="0"
+                                    HasShadow="False"
                                     BackgroundColor="#ECECEC"
                                     CornerRadius="10"
                                     HeightRequest="90"
@@ -104,6 +105,7 @@
                                     BackgroundColor="#222222"
                                     CornerRadius="10"
                                     Padding="0"
+                                    HasShadow="False"
                                     HeightRequest="90"
                                     WidthRequest="90">
                                     <Ellipse
@@ -125,6 +127,7 @@
                                     BackgroundColor="#ECECEC"
                                     CornerRadius="10"
                                     Padding="0"
+                                    HasShadow="False"
                                     HeightRequest="90"
                                     WidthRequest="90">
                                     <Ellipse
@@ -142,9 +145,9 @@
                                 </Frame>
                             </Grid>
                         </Frame>
-                    </Grid>
+                    </ScrollView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </ScrollView>
+    </Grid>
 </ContentPage>
